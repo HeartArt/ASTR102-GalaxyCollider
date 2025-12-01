@@ -224,7 +224,7 @@
 				MassFolder.add(effectController, 'tar_mass').onChange(generateTar).name('Target Mass (10^6 Mo)');
 				MassFolder.add(effectController, 'starDist', {'Disk':1, 'Ellipsoid Even':2, 'Disk Random':3,'Ellipsoid Random':4}).name('Star Distribution').onChange(generateStars);
 				MassFolder.add(effectController, 'particleCount', 1000, 10000, 100).name('Number of Stars').onChange(generateStars);
-				MassFolder.add(effectController, 'gospeed').name('Calculation Time Step').onChange(restart);
+				MassFolder.add(effectController, 'gospeed').name('Calculation Time Step (10^8 yr)').onChange(restart);
 				MassFolder.add(effectController, 'simspeed').name('Simulation speed').onChange(restart);
 				MassFolder.add(effectController, 'softfac', 0, 1).name('Softening').step(0.01).onChange(restart);
 				
