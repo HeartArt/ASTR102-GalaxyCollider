@@ -201,39 +201,41 @@
 		    }
 
 		    function generateStars(){
-			if(particlesMesh!==null){
-			    particlesGeometry.dispose();
-			    material_stars.dispose();
-			    scene.remove(particlesMesh);
-			}
-			//console.log('in stars')
-
-			//stars
-			var particleCount = effectController.particleCount;
-			particlesGeometry = new THREE.BufferGeometry;
-			posArray=setStarDist(particleCount);
-			for (var p=0; p<particleCount; p++){
-			    posArray[p*3]*=starRad;
-			    posArray[p*3+1]*=starRad;
-			    posArray[p*3+2]*=starRad;
-			}
-			velArray=setStarVel(particleCount);
-			accArray=starAcc(particleCount);
-
-			material_stars = new THREE.PointsMaterial({
-			    size: 0.05,
-			    color: 'white',
-			    depthWrite: false,
-			    sizeAttenuation: true,
-			    alphaMap: ball,
-			    transparent: true,
-			    blending: THREE.AdditiveBlending,
+				if(particlesMesh!==null){
+				    particlesGeometry.dispose();
+				    material_stars.dispose();
+				    scene.remove(particlesMesh);
+				}
+				//console.log('in stars')
+	
+				//stars
+				var particleCount = effectController.particleCount;
+				particlesGeometry = new THREE.BufferGeometry;
+				posArray=setStarDist(particleCount);
+				for (var p=0; p<particleCount; p++){
+				    posArray[p*3]*=starRad;
+				    posArray[p*3+1]*=starRad;
+				    posArray[p*3+2]*=starRad;
+				}
+				velArray=setStarVel(particleCount);
+				accArray=starAcc(particleCount);
+	
+				material_stars = new THREE.PointsMaterial({
+				    size: 0.05,
+				    color: 'white',
+				    depthWrite: false,
+				    sizeAttenuation: true,
+				    alphaMap: ball,
+				    transparent: true,
+				    blending: THREE.AdditiveBlending,
 			});
 
 
 			particlesGeometry.setAttribute('position',new THREE.BufferAttribute(posArray, 3).setUsage(THREE.DynamicDrawUsage)) ; 
 
 			particlesMesh = new THREE.Points(particlesGeometry, material_stars);
+
+			particlesMesh.frustumCulled = false;
 
 			scene.add(particlesMesh);
 
