@@ -302,18 +302,23 @@
 
 		    //set up where the camera is looking
 		    function CameraPosUp(){
-			if (effectController.CameraPos == 0){
-			    var CMpos= new THREE.Vector3((target.position.x*effectController.tar_mass+intruder.position.x*effectController.int_mass)/(effectController.tar_mass+effectController.int_mass),(target.position.y*effectController.tar_mass+intruder.position.y*effectController.int_mass)/(effectController.tar_mass+effectController.int_mass),(target.position.z*effectController.tar_mass+intruder.position.z*effectController.int_mass)/(effectController.tar_mass+effectController.int_mass));
-			    camera.lookAt(CMpos);
-			    return CMpos;
-			} else if (effectController.CameraPos == 1){
-			    var CMpos = new THREE.Vector3(target.position.x,target.position.y,target.position.z);
-			    camera.lookAt(CMpos);
-			    return CMpos;
-			} else if (effectController.CameraPos == 2){
-			    var CMpos = new THREE.Vector3(intruder.position.x,intruder.position.y,intruder.position.z);
-			    camera.lookAt(CMpos);
-			    return CMpos;
+				var CMpos; // Declare variable
+				if (effectController.CameraPos == 0){
+				        CMpos = new THREE.Vector3(
+				            (target.position.x*effectController.tar_mass+intruder.position.x*effectController.int_mass)/(effectController.tar_mass+effectController.int_mass),
+				            (target.position.y*effectController.tar_mass+intruder.position.y*effectController.int_mass)/(effectController.tar_mass+effectController.int_mass),
+				            (target.position.z*effectController.tar_mass+intruder.position.z*effectController.int_mass)/(effectController.tar_mass+effectController.int_mass)
+				        );
+				    } else if (effectController.CameraPos == 1){
+				        CMpos = new THREE.Vector3(target.position.x,target.position.y,target.position.z);
+				    } else if (effectController.CameraPos == 2){
+				        CMpos = new THREE.Vector3(intruder.position.x,intruder.position.y,intruder.position.z);
+				    }
+			    if (CMpos) {
+			        camera.lookAt(CMpos);
+			        controls.target.copy(CMpos); // Tell OrbitControls where the center is
+			        controls.update();           // Apply the update
+			        return CMpos;
 			}
 		    }
 
@@ -581,26 +586,33 @@
 		    }
 
 		    //render functions
-				function onWindowResize() {
+			function onWindowResize() {
 
-					camera.aspect = window.innerWidth / window.innerHeight;
-					camera.updateProjectionMatrix();
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
 
-					renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.setSize( window.innerWidth, window.innerHeight );
 
 				}
 
-				function render() {
-			const timedelta=Clock.getDelta();
-			if (dt!=0) {
-			    for (var i=0;i<effectController.simspeed/effectController.gospeed*timedelta;i++){
-				positionUpdate();
+			function render() {
+			    const timedelta=Clock.getDelta();
+			    
+			    // Physics loop (runs only when playing)
+			    if (dt!=0) {
+			        for (var i=0;i<effectController.simspeed/effectController.gospeed*timedelta;i++){
+			            positionUpdate();
+			        }
 			    }
+			
+			    // FIX: Update camera position EVERY frame, even when paused
+			    if(target && intruder) { // simple check to ensure objects exist
+			        CameraPosUp(); 
+			    }
+			
+			    renderer.render( scene, camera );
+			    requestAnimationFrame(render);
 			}
-			renderer.render( scene, camera );
-			requestAnimationFrame(render);
-
-				}
 
 		    //actual physics and updating, uses the verlet algorithm, which should be more accurate than the leap-frog or other algorithms
 		    function positionUpdate(){
@@ -677,8 +689,6 @@
 
 			}
 			particlesMesh.geometry.attributes.position.needsUpdate=true;
-
-			var Cmpos=CameraPosUp();
 		    };
 
 		</script>
