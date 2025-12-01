@@ -396,7 +396,7 @@
 			    var posDiffTy=-posArray[p*3+1];
 			    var posDiffTz=-posArray[p*3+2];
 
-			    var posNetT=Math.sqrt(posDiffTx*posDiffTx+posDiffTy*posDiffTy+posDiffTz*posDiffTz)+softfac;
+			    var posNetT=Math.sqrt(posDiffTx*posDiffTx+posDiffTy*posDiffTy+posDiffTz*posDiffTz)+effectController.softfac;
 			    accArray[p*3]=effectController.tar_mass*posDiffTx*G/(posNetT*posNetT*posNetT);
 			    accArray[p*3+1]=effectController.tar_mass*posDiffTy*G/(posNetT*posNetT*posNetT);
 			    accArray[p*3+2]=effectController.tar_mass*posDiffTz*G/(posNetT*posNetT*posNetT);
@@ -641,7 +641,7 @@
 			var intz=(intruder.position.z+vel_int[2]*dt+acc_int[2]*(dt*dt*0.5));
 			intruder.position.set(intx,inty,intz);
 
-			var distNet=target.position.distanceTo(intruder.position)+softfac;
+			var distNet=target.position.distanceTo(intruder.position)+effectController.softfac;
 			var distVec=new Float32Array(3);
 			distVec[0]=(target.position.x-intruder.position.x)/distNet;
 			distVec[1]=(target.position.y-intruder.position.y)/distNet;
@@ -674,13 +674,13 @@
 			    var posDiffTy=-posArray[p*3+1]+target.position.y;
 			    var posDiffTz=-posArray[p*3+2]+target.position.z;
 
-			    var posNetT=Math.sqrt(posDiffTx*posDiffTx+posDiffTy*posDiffTy+posDiffTz*posDiffTz)+softfac;
+			    var posNetT=Math.sqrt(posDiffTx*posDiffTx+posDiffTy*posDiffTy+posDiffTz*posDiffTz)+effectController.softfac;
 
 			    var posDiffIx=-posArray[p*3]+intruder.position.x;
 			    var posDiffIy=-posArray[p*3+1]+intruder.position.y;
 			    var posDiffIz=-posArray[p*3+2]+intruder.position.z;
 
-			    var posNetI=Math.sqrt(posDiffIx*posDiffIx+posDiffIy*posDiffIy+posDiffIz*posDiffIz)+softfac;
+			    var posNetI=Math.sqrt(posDiffIx*posDiffIx+posDiffIy*posDiffIy+posDiffIz*posDiffIz)+effectController.softfac;
 
 			    posArray[p*3]+=velArray[p*3]*dt+accArray[p*3]*dt*dt*0.5;
 			    posArray[p*3+1]+=velArray[p*3+1]*dt+accArray[p*3+1]*dt*dt*0.5;
