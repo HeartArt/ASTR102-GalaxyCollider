@@ -272,18 +272,32 @@
 			
 
 		    //restart the setup before playing
-		    function restart(){
-			effectController.hasplayed=false;
-			effectController.playpause=false;
-			effectController.reset=false;
-			startstop();
-			generateInt();
-			generateStars();
-			generateTar();
-			//camera.position.set( 1, 1, 3 );
-			var Cmpos=CameraPosUp();
-			gui.foldersRecursive()[2].controllers[1].updateDisplay();
-		    }
+			function restart() {
+			    // 1. Reset Internal State
+			    effectController.hasplayed = false;
+			    effectController.playpause = false;
+			    effectController.reset = false;
+			
+			    // 2. Force Physics to Stop
+			    startstop(); 
+			
+			    // 3. Regenerate the Galaxy
+			    generateInt();
+			    generateStars();
+			    generateTar();
+			
+			    // 4. Reset Camera Focus
+				camera.position.set( 1, 1, 3 );
+			    CameraPosUp();
+			
+			    // 5. Update the GUI Buttons (Play/Pause and Reset)
+			    const controllers = gui.foldersRecursive().flatMap(f => f.controllers);
+			    controllers.forEach(c => {
+			        if (c.property === 'playpause' || c.property === 'reset') {
+			            c.updateDisplay();
+			        }
+			    });
+			}
 
 		    //pause when restart occurs
 			function startstop() {
@@ -291,7 +305,6 @@
 			        dt = effectController.gospeed;
 			        effectController.hasplayed = true;
 			    } else {
-			        // This is the part that was missing/commented out
 			        dt = 0;
 			    }
 			}
@@ -602,7 +615,7 @@
 			    }
 			
 			    // FIX: Update camera position EVERY frame, even when paused
-			    if(target && intruder) { // simple check to ensure objects exist
+			    if(target && intruder) {
 			        CameraPosUp(); 
 			    }
 			
