@@ -286,19 +286,15 @@
 		    }
 
 		    //pause when restart occurs
-		    function startstop(){
-			if (effectController.playpause == true){
-			    //render()
-			    dt=effectController.gospeed;
-			    //softfac=dt
-			    effectController.hasplayed=true;
+			function startstop() {
+			    if (effectController.playpause == true) {
+			        dt = effectController.gospeed;
+			        effectController.hasplayed = true;
+			    } else {
+			        // This is the part that was missing/commented out
+			        dt = 0;
+			    }
 			}
-			}
-			//else if (effectController.playpause == false){
-			//    dt=0;
-			//    var Cmpos=CameraPosUp();
-			//}
-		    //}
 
 		    //set up where the camera is looking
 		    function CameraPosUp(){
@@ -610,7 +606,7 @@
 			        CameraPosUp(); 
 			    }
 			
-			    renderer.render( scene, camera );
+			    renderer.render(scene, camera);
 			    requestAnimationFrame(render);
 			}
 
