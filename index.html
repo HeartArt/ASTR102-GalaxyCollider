@@ -58,9 +58,7 @@
 		    let G=0.00136; // kpc^3/(10^8yrs)^2/10^6Mo 
 		    //typical galaxy is 1-100kpc, central mass of MW is 4e6 Mo, full mass is 1e9 Mo, 
 		    //andromeda and MW will collide at ~10kpc/10^8yrs
-
-		    //softening factor to help account for close encouters, could be fixed to scale with the time step, you want this to be small for more accurate physics
-		    let softfac=0.001
+			
 		    // adds small randomness to the initial position of the target and intruder so that no error occurs if they are placed on top of one another
 		    let epsilon=10000;
 
@@ -112,6 +110,8 @@
 		    //simulation speed, how many years simulated per second (10^8yrs/s)
 		    //same accuray of physics, but will run the simulation faster depending on computational power
 		    effectController.simspeed=10;
+			//softening factor to help account for close encouters, could be fixed to scale with the time step, you want this to be small for more accurate physics
+		    effectController.softfac=0.001;
 
 		    //when false is paused, when true is playing
 		    effectController.playpause=false;
@@ -131,10 +131,10 @@
 
 		    //set up the initial values, such as the Target, the intruder and the star map. 
 		    function generateTar(){
-			if(target!==null){
-			    geometry_tar.dispose();
-			    material_tar.dispose();
-			    scene.remove(target);
+				if(target!==null){
+				    geometry_tar.dispose();
+				    material_tar.dispose();
+				    scene.remove(target);
 			}
 			//target
 			material_tar = new THREE.MeshBasicMaterial({color: 'cyan'});
@@ -164,10 +164,10 @@
 		    }
 
 		    function generateInt(){
-			if(intruder!==null){
-			    geometry_int.dispose();
-			    material_int.dispose();
-			    scene.remove(intruder);
+				if(intruder!==null){
+				    geometry_int.dispose();
+				    material_int.dispose();
+				    scene.remove(intruder);
 			}
 			//console.log('in Int')
 			//intruder
@@ -250,25 +250,26 @@
 
 		    //set up the GUI for choosing the initial parameters
 		    function initGUI() {
-			const PositionFolder = gui.addFolder( 'Intruder');
-			PositionFolder.add(effectController, 'int_posx').onChange(generateInt).name('Intruder X (kpc)');
-			PositionFolder.add(effectController, 'int_posy').onChange(generateInt).name('Intruder Y (kpc)');
-			PositionFolder.add(effectController, 'int_posz').onChange(generateInt).name('Intruder Z (kpc)');
-			PositionFolder.add(effectController, 'int_velx').onChange(generateInt).name('Intruder V_X (kpc/10^8 yrs)');
-			PositionFolder.add(effectController, 'int_vely').onChange(generateInt).name('Intruder V_Y (kpc/10^8 yrs)');
-			PositionFolder.add(effectController, 'int_velz').onChange(generateInt).name('Intruder V_Z (kpc/10^8 yrs)');
-			PositionFolder.open();
-			const MassFolder = gui.addFolder('Stars and precision');
-			MassFolder.add(effectController, 'int_mass').onChange(generateInt).name('Intruder Mass (10^6 Mo)');
-			MassFolder.add(effectController,'tar_mass').onChange(generateTar).name( ' Target  Mass (10^6 Mo)');
-			MassFolder.add(effectController, 'starDist', {'Disk':1, 'Ellipsoid Even':2, 'Disk Random':3,'Ellipsoid Random':4}).name('Star Distribution').onChange(generateStars)
-			MassFolder.add(effectController, 'particleCount', 1000,10000,100).name('Number of Stars').onChange(generateStars);
-			MassFolder.add(effectController,'gospeed').name('Calculation Time Step (10^8 yrs)').onChange(restart); 
-			MassFolder.add(effectController,'simspeed').name('Simulation speed').onChange(restart);
-			const PlayPauseFolder = gui.addFolder('Animation');
-			PlayPauseFolder.add(effectController, 'CameraPos',{'Center of mass':0,'Target':1,'Intruder':2}).name('Camera Position').onChange(CameraPosUp);
-			PlayPauseFolder.add(effectController, 'playpause').name('Play/Pause').onChange(startstop);
-			PlayPauseFolder.add(effectController,'reset').name('Reset').onChange(restart);
+				const PositionFolder = gui.addFolder( 'Intruder');
+				PositionFolder.add(effectController, 'int_posx').onChange(generateInt).name('Intruder X (kpc)');
+				PositionFolder.add(effectController, 'int_posy').onChange(generateInt).name('Intruder Y (kpc)');
+				PositionFolder.add(effectController, 'int_posz').onChange(generateInt).name('Intruder Z (kpc)');
+				PositionFolder.add(effectController, 'int_velx').onChange(generateInt).name('Intruder V_X (kpc/10^8 yrs)');
+				PositionFolder.add(effectController, 'int_vely').onChange(generateInt).name('Intruder V_Y (kpc/10^8 yrs)');
+				PositionFolder.add(effectController, 'int_velz').onChange(generateInt).name('Intruder V_Z (kpc/10^8 yrs)');
+				PositionFolder.open();
+				const MassFolder = gui.addFolder('Stars and precision');
+				MassFolder.add(effectController, 'int_mass').onChange(generateInt).name('Intruder Mass (10^6 Mo)');
+				MassFolder.add(effectController,'tar_mass').onChange(generateTar).name( ' Target  Mass (10^6 Mo)');
+				MassFolder.add(effectController, 'starDist', {'Disk':1, 'Ellipsoid Even':2, 'Disk Random':3,'Ellipsoid Random':4}).name('Star Distribution').onChange(generateStars)
+				MassFolder.add(effectController, 'particleCount', 1000,10000,100).name('Number of Stars').onChange(generateStars);
+				MassFolder.add(effectController,'gospeed').name('Calculation Time Step (10^8 yrs)').onChange(restart); 
+				MassFolder.add(effectController,'simspeed').name('Simulation speed').onChange(restart);
+				MassFolder.add(effectController, 'softfac').name('Softening').onChange(restart);
+				const PlayPauseFolder = gui.addFolder('Animation');
+				PlayPauseFolder.add(effectController, 'CameraPos',{'Center of mass':0,'Target':1,'Intruder':2}).name('Camera Position').onChange(CameraPosUp);
+				PlayPauseFolder.add(effectController, 'playpause').name('Play/Pause').onChange(startstop);
+				PlayPauseFolder.add(effectController,'reset').name('Reset').onChange(restart);
 		    };
 			
 			
